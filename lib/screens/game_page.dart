@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../data/questions_data.dart';
 import '../states/game_state.dart';
+import 'end_page.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -12,111 +15,186 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  int questionIndex = 0;
+  List<Map<String, dynamic>> remainingQuestions = [];
+  Map<String, dynamic>? currentQuestion;
+  List<String> currentOptions = [];
   bool usedFifty = false;
   bool usedRefresh = false;
-  int timeLeft = 30;
+  int timeLeft = 20;
   Timer? timer;
   List<int> removedOptions = [];
+  bool isAnswered = false;
+  final formatter = NumberFormat("#,###", "id_ID");
 
-  final List<Map<String, dynamic>> questions = [
-    {
-      'question': 'Game populer “Genshin Impact” dibuat oleh perusahaan?',
-      'options': ['HoYoverse', 'Tencent', 'miHoYo', 'Bandai Namco'],
-      'answer': 0,
-    },
-    {
-      'question': 'Karakter utama dalam anime “Attack on Titan” adalah?',
-      'options': ['Naruto', 'Eren Yeager', 'Goku', 'Deku'],
-      'answer': 1,
-    },
-    {
-      'question': 'Film “Avengers: Endgame” rilis pada tahun?',
-      'options': ['2017', '2018', '2019', '2020'],
-      'answer': 2,
-    },
-    {
-      'question': 'Studio pembuat game “The Witcher 3” adalah?',
-      'options': ['CD Projekt Red', 'Ubisoft', 'Bethesda', 'EA'],
-      'answer': 0,
-    },
-    {
-      'question': 'Anime “One Piece” dibuat oleh?',
-      'options': ['Masashi Kishimoto', 'Eiichiro Oda', 'Tite Kubo', 'Akira Toriyama'],
-      'answer': 1,
-    },
-    {
-      'question': 'Film “Inception” disutradarai oleh?',
-      'options': ['Christopher Nolan', 'Steven Spielberg', 'James Cameron', 'Quentin Tarantino'],
-      'answer': 0,
-    },
-    {
-      'question': 'Game “Minecraft” pertama kali dirilis tahun?',
-      'options': ['2009', '2010', '2011', '2012'],
-      'answer': 2,
-    },
+  final List<int> moneyLevels = [
+    1000,
+    10000,
+    100000,
+    1000000,
+    10000000,
+    100000000,
+    1000000000,
+    10000000000,
+    100000000000,
+    1000000000000,
   ];
 
   @override
   void initState() {
     super.initState();
+    _loadQuestions(easyQuestions);
     startTimer();
+  }
+
+  List<Map<String, dynamic>> getDifficultyPool(int money) {
+    if (money < 10000000) return easyQuestions;
+    if (money < 1000000000) return mediumQuestions;
+    return hardQuestions;
   }
 
   void startTimer() {
     timer?.cancel();
-    timeLeft = 30;
+    timeLeft = 20;
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (timeLeft > 0) {
         setState(() => timeLeft--);
       } else {
-        t.cancel(); // end logic nanti
+        t.cancel();
+        endGame();
       }
     });
   }
 
+  void _loadQuestions(List<Map<String, dynamic>> pool) {
+    remainingQuestions = List.from(pool);
+    _nextQuestion();
+  }
+
+  void _nextQuestion() {
+    final money = context.read<GameState>().money;
+    final difficultyPool = getDifficultyPool(money);
+
+    if (remainingQuestions.isEmpty ||
+        !difficultyPool.contains(remainingQuestions.first)) {
+      remainingQuestions = List.from(difficultyPool);
+    }
+
+    if (remainingQuestions.isEmpty) {
+      endGame();
+      return;
+    }
+
+    final random = Random();
+    final nextQ = remainingQuestions[random.nextInt(remainingQuestions.length)];
+    remainingQuestions.remove(nextQ);
+
+    currentQuestion = nextQ;
+    currentOptions = List<String>.from(nextQ['options']);
+    currentOptions.shuffle(Random());
+    removedOptions.clear();
+    setState(() {});
+  }
+
   void useFifty() {
-    if (usedFifty) return;
+    if (usedFifty || currentQuestion == null) return;
     usedFifty = true;
-    final correct = questions[questionIndex]['answer'];
-    final indices = [0, 1, 2, 3];
-    indices.remove(correct);
-    indices.shuffle();
-    removedOptions = indices.take(2).toList();
+
+    final correct = currentQuestion!['answer'];
+    final wrongOptions = currentOptions.where((o) => o != correct).toList();
+    wrongOptions.shuffle();
+
+    removedOptions = [];
+    for (int i = 0; i < currentOptions.length; i++) {
+      if (wrongOptions.take(2).contains(currentOptions[i])) {
+        removedOptions.add(i);
+      }
+    }
     setState(() {});
   }
 
   void useRefresh() {
     if (usedRefresh) return;
     usedRefresh = true;
-    final random = Random();
-    questionIndex = random.nextInt(questions.length);
-    removedOptions.clear();
-    timeLeft = 30;
+    _nextQuestion();
+    timeLeft = 20;
     setState(() {});
   }
 
-  void checkAnswer(int index) {
-    final correct = questions[questionIndex]['answer'];
-    if (index == correct) {
-      context.read<GameState>().addMoney(1000);
+  void checkAnswer(String selectedOption) {
+    if (isAnswered || currentQuestion == null) return;
+    isAnswered = true;
+
+    final correctAnswer = currentQuestion!['answer'];
+    final gameState = context.read<GameState>();
+
+    if (selectedOption == correctAnswer) {
+      int currentIndex = moneyLevels.indexOf(gameState.money);
+      if (currentIndex < moneyLevels.length - 1) {
+        gameState.money = moneyLevels[currentIndex + 1];
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Benar! +\$1000')),
+        SnackBar(
+          content: Text(
+            'Benar! Uang sekarang: Rp ${formatter.format(gameState.money)}',
+          ),
+          duration: const Duration(seconds: 1),
+        ),
       );
+
+      if (gameState.money >= 1000000000000) {
+        Future.delayed(const Duration(seconds: 1), endGame);
+        return;
+      }
+
+      Future.delayed(const Duration(seconds: 1), () {
+        isAnswered = false;
+        timeLeft = 20;
+        _nextQuestion();
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Salah!')),
+        const SnackBar(
+          content: Text('Salah! Permainan Berakhir'),
+          duration: Duration(seconds: 1),
+        ),
       );
+      Future.delayed(const Duration(seconds: 1), endGame);
     }
-    removedOptions.clear();
-    timeLeft = 30;
-    setState(() {});
+  }
+
+  void endGame() {
+    timer?.cancel();
+    final playerName = context.read<GameState>().playerName;
+    final totalMoney = context.read<GameState>().money;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => EndPage(
+          playerName: playerName,
+          totalMoney: totalMoney,
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final q = questions[questionIndex];
-    final options = q['options'] as List<String>;
+    if (currentQuestion == null) {
+      return const Scaffold(
+        backgroundColor: Color(0xFFFFB300),
+        body: Center(child: CircularProgressIndicator(color: Colors.black)),
+      );
+    }
+
+    final q = currentQuestion!;
     final money = context.watch<GameState>().money;
 
     return Scaffold(
@@ -124,13 +202,9 @@ class _GamePageState extends State<GamePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 50),
-          onPressed: () => Navigator.pop(context),
-        ),
         centerTitle: true,
         title: Container(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.black,
             shape: BoxShape.circle,
@@ -141,7 +215,7 @@ class _GamePageState extends State<GamePage> {
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 22,
             ),
           ),
         ),
@@ -151,23 +225,63 @@ class _GamePageState extends State<GamePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // logo
             SizedBox(
-              height: 220,
+              height: 250,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.asset('assets/images/logo1.png', height: 220),
+                  Image.asset('assets/images/logo1.png', height: 250),
                   Positioned(
-                    top: 40,
-                    child: Image.asset('assets/images/logo2.png', height: 75),
+                    top: 45,
+                    child: Image.asset('assets/images/logo2.png', height: 70),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // uang
+            // Baris bantuan (50:50 dan refresh)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: TextButton(
+                    onPressed: usedFifty ? null : useFifty,
+                    child: const Text(
+                      '50:50',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
+                    onPressed: usedRefresh ? null : useRefresh,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 25),
+
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               decoration: BoxDecoration(
@@ -176,7 +290,7 @@ class _GamePageState extends State<GamePage> {
                 border: Border.all(color: Colors.white, width: 2),
               ),
               child: Text(
-                '\$$money',
+                'Rp ${formatter.format(money)}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -184,10 +298,8 @@ class _GamePageState extends State<GamePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
 
-            const SizedBox(height: 12),
-
-            // pertanyaan
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -208,53 +320,9 @@ class _GamePageState extends State<GamePage> {
             ),
             const SizedBox(height: 20),
 
-            //fitur bantuan
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // 50:50
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: TextButton(
-                    onPressed: usedFifty ? null : useFifty,
-                    child: const Text(
-                      '50:50',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-                // refresh
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: IconButton(
-                    onPressed: usedRefresh ? null : useRefresh,
-                    icon: const Icon(Icons.refresh, color: Colors.white, size: 22),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // pilihan jawaban
-            ...List.generate(4, (i) {
+            ...List.generate(currentOptions.length, (i) {
               final disabled = removedOptions.contains(i);
+              final optionText = currentOptions[i];
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Container(
@@ -264,18 +332,15 @@ class _GamePageState extends State<GamePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ElevatedButton(
-                    onPressed: disabled ? null : () => checkAnswer(i),
+                    onPressed: disabled ? null : () => checkAnswer(optionText),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                       disabled ? Colors.grey.shade600 : Colors.black,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                     ),
                     child: Text(
-                      '${String.fromCharCode(65 + i)}. ${options[i]}',
+                      '${String.fromCharCode(65 + i)}. $optionText',
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -286,11 +351,5 @@ class _GamePageState extends State<GamePage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    timer?.cancel();
-    super.dispose();
   }
 }
