@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../states/game_state.dart';
-import 'login_page.dart';
-import 'panduan_page.dart';
-import 'game_page.dart';
 import '../widgets/logo.dart';
 import '../widgets/back_button.dart';
 
@@ -12,10 +10,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //UI dinamis
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Skala proporsional untuk semua elemen
     final logoSize = screenHeight * 0.35;
     final welcomeFontSize = screenWidth * 0.06;
     final buttonFontSize = screenWidth * 0.05;
@@ -30,10 +28,7 @@ class HomePage extends StatelessWidget {
         elevation: 0,
         leading: BackButtonWidget(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const LoginPage()),
-            );
+            context.go('/login');
           },
         ),
       ),
@@ -44,7 +39,6 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Logo responsif
                 Logo(size: logoSize),
 
                 SizedBox(height: verticalSpacingSmall),
@@ -77,10 +71,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const GamePage()),
-                      );
+                      context.go('/game');
                     },
                     child: Text(
                       'Main',
@@ -109,10 +100,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const PanduanPage()),
-                      );
+                      context.go('/panduan');
                     },
                     child: Text(
                       'Panduan',

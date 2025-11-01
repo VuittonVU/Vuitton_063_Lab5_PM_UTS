@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/back_button.dart';
 
 class PanduanPage extends StatelessWidget {
@@ -7,7 +7,7 @@ class PanduanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan MediaQuery untuk menyesuaikan ukuran layar
+    // UI dinamis
     final screenWidth = MediaQuery.of(context).size.width;
 
     final titleFont = screenWidth * 0.06;
@@ -23,10 +23,7 @@ class PanduanPage extends StatelessWidget {
         elevation: 0,
         leading: BackButtonWidget(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const HomePage()),
-            );
+            context.go('/home');
           },
         ),
         centerTitle: true,
@@ -50,7 +47,7 @@ class PanduanPage extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.all(containerPadding),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFD382), // krem muda
+                  color: const Color(0xFFFFD382),
                   borderRadius: BorderRadius.circular(borderRadius),
                   border: Border.all(color: Colors.black, width: 1.2),
                 ),

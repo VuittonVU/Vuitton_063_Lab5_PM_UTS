@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'home_page.dart';
 import '../states/game_state.dart';
 import '../widgets/logo.dart';
 
@@ -22,11 +22,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Gunakan MediaQuery untuk dapat ukuran layar
+    // Ukuran layar dinamis
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Skala dinamis untuk ukuran elemen
     final logoSize = screenHeight * 0.35;
     final inputFontSize = screenWidth * 0.045;
     final buttonFontSize = screenWidth * 0.045;
@@ -43,10 +42,9 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               // Logo dinamis
               Logo(size: logoSize),
-
               SizedBox(height: verticalSpacing),
 
-              // Kolom input nama
+              // Input nama
               TextField(
                 controller: _controller,
                 textAlign: TextAlign.center,
@@ -71,7 +69,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-
               SizedBox(height: verticalSpacing),
 
               // Tombol masuk
@@ -99,17 +96,16 @@ class _LoginPageState extends State<LoginPage> {
                       return;
                     }
 
+                    // Simpan nama ke GameState
                     context.read<GameState>().setPlayerName(name);
 
+                    // Navigasi ke HomePage
                     if (context.mounted) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HomePage()),
-                      );
+                      context.go('/home');
                     }
                   },
                   child: Text(
-                    'Masukkan',
+                    'Masuk',
                     style: TextStyle(
                       fontSize: buttonFontSize,
                       fontWeight: FontWeight.bold,

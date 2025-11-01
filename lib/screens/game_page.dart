@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../data/questions_data.dart';
 import '../states/game_state.dart';
-import 'end_page.dart';
 import '../widgets/logo.dart';
 import '../widgets/back_button.dart';
 
@@ -167,18 +167,13 @@ class _GamePageState extends State<GamePage> {
 
   void endGame() {
     timer?.cancel();
-    final playerName = context.read<GameState>().playerName;
-    final totalMoney = context.read<GameState>().money;
+    final gameState = context.read<GameState>();
+    final playerName = gameState.playerName.isNotEmpty
+        ? gameState.playerName
+        : 'Guest';
+    final totalMoney = gameState.money;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => EndPage(
-          playerName: playerName,
-          totalMoney: totalMoney,
-        ),
-      ),
-    );
+    context.go('/end/${Uri.encodeComponent(playerName)}/$totalMoney');
   }
 
   @override
@@ -199,7 +194,6 @@ class _GamePageState extends State<GamePage> {
     final q = currentQuestion!;
     final money = context.watch<GameState>().money;
 
-    // Gunakan MediaQuery untuk ukuran dinamis
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final timerSize = screenWidth * 0.10;
@@ -217,7 +211,7 @@ class _GamePageState extends State<GamePage> {
         leading: BackButtonWidget(
           onPressed: () {
             context.read<GameState>().resetGame();
-            Navigator.pop(context);
+            context.go('/home');
           },
         ),
         centerTitle: true,
@@ -238,7 +232,6 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ),
-
       body: Padding(
         padding: EdgeInsets.all(screenWidth * 0.05),
         child: Column(
@@ -247,7 +240,7 @@ class _GamePageState extends State<GamePage> {
             SizedBox(height: logoSize, child: Logo(size: logoSize)),
             SizedBox(height: spacingSmall),
 
-            // Fitur bantuan
+            // Bantuan 50:50 & Refresh
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -255,7 +248,8 @@ class _GamePageState extends State<GamePage> {
                   opacity: usedFifty ? 0.4 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                    margin:
+                    EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
                     padding: EdgeInsets.all(screenWidth * 0.017),
                     decoration: BoxDecoration(
                       color: Colors.black,
@@ -279,7 +273,8 @@ class _GamePageState extends State<GamePage> {
                   opacity: usedRefresh ? 0.4 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                    margin:
+                    EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
                     padding: EdgeInsets.all(screenWidth * 0.017),
                     decoration: BoxDecoration(
                       color: Colors.black,
@@ -343,18 +338,14 @@ class _GamePageState extends State<GamePage> {
 
             SizedBox(height: spacingMedium),
 
-            // Pilihan jawaban
+            //Pilihan Jawaban
             ...List.generate(currentOptions.length, (i) {
               final disabled = removedOptions.contains(i);
               final optionText = currentOptions[i];
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: screenHeight * 0.007),
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
                   child: ElevatedButton(
                     onPressed: disabled ? null : () => checkAnswer(optionText),
                     style: ElevatedButton.styleFrom(
@@ -364,6 +355,12 @@ class _GamePageState extends State<GamePage> {
                       padding: EdgeInsets.symmetric(
                         vertical: screenHeight * 0.018,
                       ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side:
+                        const BorderSide(color: Colors.white, width: 2),
+                      ),
+                      elevation: 2,
                     ),
                     child: Text(
                       '${String.fromCharCode(65 + i)}. $optionText',

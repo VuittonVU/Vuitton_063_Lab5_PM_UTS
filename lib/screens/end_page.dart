@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../states/game_state.dart';
-import 'login_page.dart';
-import 'game_page.dart';
 import '../widgets/logo.dart';
 import '../widgets/back_button.dart';
 
@@ -21,11 +20,10 @@ class EndPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatter = NumberFormat("#,###", "id_ID");
 
-    // Gunakan MediaQuery untuk ukuran dinamis
+    // ukuran dinamis
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Skala proporsional
     final logoSize = screenHeight * 0.25;
     final titleFont = screenWidth * 0.065;
     final textFont = screenWidth * 0.05;
@@ -42,11 +40,7 @@ class EndPage extends StatelessWidget {
         leading: BackButtonWidget(
           onPressed: () {
             context.read<GameState>().resetGame();
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => const LoginPage()),
-                  (route) => false,
-            );
+            context.go('/login');
           },
         ),
         centerTitle: true,
@@ -66,14 +60,11 @@ class EndPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo
               Logo(size: logoSize),
-
               SizedBox(height: spacingSmall),
 
-              // Nama pemain
               Text(
-                'Selamat, $playerName!',
+                'Selamat, ${Uri.decodeComponent(playerName)}!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: textFont,
@@ -84,7 +75,7 @@ class EndPage extends StatelessWidget {
 
               SizedBox(height: spacingSmall),
 
-              // Uang total
+              // Total uang
               Container(
                 padding: EdgeInsets.symmetric(
                   vertical: screenHeight * 0.015,
@@ -107,16 +98,13 @@ class EndPage extends StatelessWidget {
 
               SizedBox(height: spacingLarge),
 
-              // Tombol "Main Lagi"
+              // Tombol Main Lagi
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<GameState>().resetGame();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const GamePage()),
-                    );
+                    context.go('/game');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -140,17 +128,14 @@ class EndPage extends StatelessWidget {
 
               SizedBox(height: spacingSmall),
 
-              // Tombol "Keluar"
+              // Tombol Keluar
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     context.read<GameState>().resetGame();
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LoginPage()),
-                          (route) => false,
-                    );
+                    await Future.delayed(const Duration(milliseconds: 150));
+                    context.go('/login');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
