@@ -24,16 +24,32 @@ class EndPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 50,
+          ),
+          onPressed: () {
+            context.read<GameState>().resetGame();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+                  (route) => false,
+            );
+          },
+        ),
         centerTitle: true,
         title: const Text(
           'Permainan Selesai',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: 28,
           ),
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(32),
         child: Center(
