@@ -15,7 +15,7 @@ class PanduanPage extends StatelessWidget {
           icon: const Icon(
             Icons.arrow_back,
             color: Colors.black,
-            size: 30,
+            size: 50,
           ),
           onPressed: () {
             Navigator.pushReplacement(
