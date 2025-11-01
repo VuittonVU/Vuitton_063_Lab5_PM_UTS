@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../states/game_state.dart';
+import 'login_page.dart';
 //import 'panduan_page.dart';
 //import 'game_page.dart';
 
@@ -13,6 +14,19 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFB300),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 50),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+            );
+          },
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -46,18 +60,18 @@ class HomePage extends StatelessWidget {
 
                 // selamat datang
                 Text(
-                  '\nSelamat Datang!!\n$playerName',
+                  'Selamat Datang!!\n${context.watch<GameState>().playerName}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
                 const SizedBox(height: 50),
 
-                // tombol main
+                // tombol Main
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -84,13 +98,13 @@ class HomePage extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // tombol panduan
+                // tombol Panduan
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -114,5 +128,6 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+
   }
 }
