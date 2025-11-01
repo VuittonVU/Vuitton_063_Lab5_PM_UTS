@@ -2,12 +2,20 @@ import 'package:flutter/material.dart';
 import 'home_page.dart';
 import '../widgets/back_button.dart';
 
-
 class PanduanPage extends StatelessWidget {
   const PanduanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Gunakan MediaQuery untuk menyesuaikan ukuran layar
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final titleFont = screenWidth * 0.06;
+    final bodyFont = screenWidth * 0.04;
+    final paddingAll = screenWidth * 0.06;
+    final containerPadding = screenWidth * 0.05;
+    final borderRadius = screenWidth * 0.03;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
@@ -21,45 +29,44 @@ class PanduanPage extends StatelessWidget {
             );
           },
         ),
-
-        title: const Text(
+        centerTitle: true,
+        title: Text(
           'Panduan',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: titleFont,
           ),
         ),
-        centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(paddingAll),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Container untuk teks panduan
+              // Container panduan
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(containerPadding),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFD382), // krem muda
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  border: Border.all(color: Colors.black, width: 1.2),
                 ),
-                child: const Text(
+                child: Text(
                   '''
 Panduan Cara Bermain
 
-1. Masukkan nama Anda di halaman login.  
+1. Masukkan nama Anda di halaman login.
 2. Tekan tombol Main untuk memulai permainan.
-3. Anda akan diberikan pertanyaan dengan jawaban pilihan berganda.  
-4. Setiap jawaban benar akan memberikan sejumlah uang — semakin jauh kamu menjawab, semakin besar hadiahnya.  
-5. Anda diberikan dua fitur bantuan:  
-   - 50:50 → Menghapus dua pilihan jawaban yang salah.  
-   - Refresh → Mengganti pertanyaan dengan yang baru.  
-   (Keduanya hanya bisa digunakan satu kali per permainan)  
-6. Jika waktu habis atau jawaban salah, permainan berakhir.  
+3. Anda akan diberikan pertanyaan dengan jawaban pilihan berganda.
+4. Setiap jawaban benar akan memberikan sejumlah uang — semakin jauh kamu menjawab, semakin besar hadiahnya.
+5. Anda diberikan dua fitur bantuan:
+   - 50:50 → Menghapus dua pilihan jawaban yang salah.
+   - Refresh → Mengganti pertanyaan dengan yang baru.
+   (Keduanya hanya bisa digunakan satu kali per permainan)
+6. Jika waktu habis atau jawaban salah, permainan berakhir.
 7. Lihat total uang yang Anda kumpulkan di halaman akhir!
 
 Selamat bermain dan jadilah Triliuner!!
@@ -67,7 +74,7 @@ Selamat bermain dan jadilah Triliuner!!
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
+                    fontSize: bodyFont,
                     height: 1.6,
                     fontWeight: FontWeight.w500,
                   ),

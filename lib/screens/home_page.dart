@@ -12,6 +12,17 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Skala proporsional untuk semua elemen
+    final logoSize = screenHeight * 0.35;
+    final welcomeFontSize = screenWidth * 0.06;
+    final buttonFontSize = screenWidth * 0.05;
+    final verticalSpacingLarge = screenHeight * 0.06;
+    final verticalSpacingSmall = screenHeight * 0.025;
+    final horizontalPadding = screenWidth * 0.1;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
@@ -29,33 +40,38 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Logo(size: 320),
+                // Logo responsif
+                Logo(size: logoSize),
 
-                // selamat datang
+                SizedBox(height: verticalSpacingSmall),
+
+                // Teks selamat datang
                 Text(
                   'Selamat Datang!!\n${context.watch<GameState>().playerName}',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.black,
-                    fontSize: 24,
+                    fontSize: welcomeFontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
-                const SizedBox(height: 50),
+                SizedBox(height: verticalSpacingLarge),
 
-                // tombol Main
+                // Tombol Main
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.025,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -66,23 +82,28 @@ class HomePage extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => const GamePage()),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Main',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: buttonFontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: verticalSpacingSmall),
 
-                // tombol Panduan
+                // Tombol Panduan
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.025,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -93,9 +114,12 @@ class HomePage extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => const PanduanPage()),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Panduan',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: buttonFontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -105,6 +129,5 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
-
   }
 }

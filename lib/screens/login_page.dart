@@ -22,42 +22,68 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Gunakan MediaQuery untuk dapat ukuran layar
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Skala dinamis untuk ukuran elemen
+    final logoSize = screenHeight * 0.35;
+    final inputFontSize = screenWidth * 0.045;
+    final buttonFontSize = screenWidth * 0.045;
+    final verticalSpacing = screenHeight * 0.03;
+    final horizontalPadding = screenWidth * 0.1;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Logo(size: 320),
+              // Logo dinamis
+              Logo(size: logoSize),
 
-              // kolom input nama
+              SizedBox(height: verticalSpacing),
+
+              // Kolom input nama
               TextField(
                 controller: _controller,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: inputFontSize,
+                ),
                 decoration: InputDecoration(
                   hintText: 'Masukkan nama...',
-                  hintStyle: const TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(
+                    color: Colors.white70,
+                    fontSize: inputFontSize * 0.9,
+                  ),
                   filled: true,
                   fillColor: Colors.black,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.02,
+                  ),
                 ),
               ),
-              const SizedBox(height: 25),
 
-              // tombol masuk
+              SizedBox(height: verticalSpacing),
+
+              // Tombol masuk
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -82,10 +108,10 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     }
                   },
-                  child: const Text(
+                  child: Text(
                     'Masukkan',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: buttonFontSize,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

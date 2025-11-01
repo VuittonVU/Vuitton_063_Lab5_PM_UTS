@@ -21,6 +21,19 @@ class EndPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatter = NumberFormat("#,###", "id_ID");
 
+    // Gunakan MediaQuery untuk ukuran dinamis
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Skala proporsional
+    final logoSize = screenHeight * 0.25;
+    final titleFont = screenWidth * 0.065;
+    final textFont = screenWidth * 0.05;
+    final buttonFont = screenWidth * 0.05;
+    final paddingHorizontal = screenWidth * 0.1;
+    final spacingSmall = screenHeight * 0.02;
+    final spacingLarge = screenHeight * 0.05;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
@@ -37,45 +50,46 @@ class EndPage extends StatelessWidget {
           },
         ),
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'Permainan Selesai',
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 28,
+            fontSize: titleFont,
           ),
         ),
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.symmetric(horizontal: paddingHorizontal),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 230,
-                child: const Logo(size: 220),
-              ),
-              const SizedBox(height: 20),
+              // Logo
+              Logo(size: logoSize),
+
+              SizedBox(height: spacingSmall),
 
               // Nama pemain
               Text(
                 'Selamat, $playerName!',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 24,
+                style: TextStyle(
+                  fontSize: textFont,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: spacingSmall),
 
               // Uang total
               Container(
-                padding:
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * 0.015,
+                  horizontal: screenWidth * 0.05,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(20),
@@ -83,15 +97,15 @@ class EndPage extends StatelessWidget {
                 ),
                 child: Text(
                   'Total Uang: Rp ${formatter.format(totalMoney)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: textFont * 0.9,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 60),
+              SizedBox(height: spacingLarge),
 
               // Tombol "Main Lagi"
               SizedBox(
@@ -107,22 +121,24 @@ class EndPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.025,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Main Lagi',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: buttonFont,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: spacingSmall),
 
               // Tombol "Keluar"
               SizedBox(
@@ -139,16 +155,18 @@ class EndPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.025,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: const BorderSide(color: Colors.black, width: 2),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Keluar',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: buttonFont,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

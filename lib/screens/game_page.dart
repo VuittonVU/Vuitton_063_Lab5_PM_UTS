@@ -199,6 +199,16 @@ class _GamePageState extends State<GamePage> {
     final q = currentQuestion!;
     final money = context.watch<GameState>().money;
 
+    // Gunakan MediaQuery untuk ukuran dinamis
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final timerSize = screenWidth * 0.10;
+    final logoSize = screenHeight * 0.22;
+    final fontSize = screenWidth * 0.04;
+    final buttonFont = screenWidth * 0.042;
+    final spacingSmall = screenHeight * 0.02;
+    final spacingMedium = screenHeight * 0.03;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
@@ -210,10 +220,9 @@ class _GamePageState extends State<GamePage> {
             Navigator.pop(context);
           },
         ),
-
         centerTitle: true,
         title: Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(timerSize * 0.3),
           decoration: BoxDecoration(
             color: Colors.black,
             shape: BoxShape.circle,
@@ -221,28 +230,24 @@ class _GamePageState extends State<GamePage> {
           ),
           child: Text(
             '$timeLeft',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 22,
+              fontSize: timerSize * 0.6,
             ),
           ),
         ),
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(screenWidth * 0.05),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 230,
-              child: const Logo(size: 220),
-            ),
-            const SizedBox(height: 20),
+            SizedBox(height: logoSize, child: Logo(size: logoSize)),
+            SizedBox(height: spacingSmall),
 
-
-          // Baris bantuan (50:50 dan refresh)
+            // Fitur bantuan
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -250,8 +255,8 @@ class _GamePageState extends State<GamePage> {
                   opacity: usedFifty ? 0.4 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    padding: const EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                    padding: EdgeInsets.all(screenWidth * 0.017),
                     decoration: BoxDecoration(
                       color: Colors.black,
                       shape: BoxShape.circle,
@@ -259,12 +264,12 @@ class _GamePageState extends State<GamePage> {
                     ),
                     child: TextButton(
                       onPressed: usedFifty ? null : useFifty,
-                      child: const Text(
+                      child: Text(
                         '50:50',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: fontSize,
                         ),
                       ),
                     ),
@@ -274,15 +279,16 @@ class _GamePageState extends State<GamePage> {
                   opacity: usedRefresh ? 0.4 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    padding: const EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                    padding: EdgeInsets.all(screenWidth * 0.017),
                     decoration: BoxDecoration(
                       color: Colors.black,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 3),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
+                      icon: Icon(Icons.refresh,
+                          color: Colors.white, size: screenWidth * 0.04),
                       onPressed: usedRefresh ? null : useRefresh,
                     ),
                   ),
@@ -290,10 +296,14 @@ class _GamePageState extends State<GamePage> {
               ],
             ),
 
-            const SizedBox(height: 25),
+            SizedBox(height: spacingMedium),
 
+            // Uang
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.01,
+                horizontal: screenWidth * 0.06,
+              ),
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(12),
@@ -301,18 +311,20 @@ class _GamePageState extends State<GamePage> {
               ),
               child: Text(
                 'Rp ${formatter.format(money)}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: fontSize * 1.1,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
 
+            SizedBox(height: spacingSmall),
+
+            // Pertanyaan
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.all(screenWidth * 0.04),
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(12),
@@ -321,20 +333,22 @@ class _GamePageState extends State<GamePage> {
               child: Text(
                 q['question'],
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
 
+            SizedBox(height: spacingMedium),
+
+            // Pilihan jawaban
             ...List.generate(currentOptions.length, (i) {
               final disabled = removedOptions.contains(i);
               final optionText = currentOptions[i];
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.007),
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -347,11 +361,13 @@ class _GamePageState extends State<GamePage> {
                       backgroundColor:
                       disabled ? Colors.grey.shade600 : Colors.black,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.018,
+                      ),
                     ),
                     child: Text(
                       '${String.fromCharCode(65 + i)}. $optionText',
-                      style: const TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: buttonFont),
                     ),
                   ),
                 ),
