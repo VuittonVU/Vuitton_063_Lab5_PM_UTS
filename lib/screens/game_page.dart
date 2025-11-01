@@ -241,40 +241,49 @@ class _GamePageState extends State<GamePage> {
             const SizedBox(height: 20),
 
             // Baris bantuan (50:50 dan refresh)
+            // Baris bantuan (50:50 dan refresh)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: TextButton(
-                    onPressed: usedFifty ? null : useFifty,
-                    child: const Text(
-                      '50:50',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                AnimatedOpacity(
+                  opacity: usedFifty ? 0.4 : 1.0, // Fade jika sudah digunakan
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 3),
+                    ),
+                    child: TextButton(
+                      onPressed: usedFifty ? null : useFifty,
+                      child: const Text(
+                        '50:50',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
-                    onPressed: usedRefresh ? null : useRefresh,
+                AnimatedOpacity(
+                  opacity: usedRefresh ? 0.4 : 1.0, // Fade jika sudah digunakan
+                  duration: const Duration(milliseconds: 300),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 3),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.refresh, color: Colors.white, size: 20),
+                      onPressed: usedRefresh ? null : useRefresh,
+                    ),
                   ),
                 ),
               ],
