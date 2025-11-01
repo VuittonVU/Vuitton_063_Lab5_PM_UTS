@@ -74,8 +74,8 @@ const List<Map<String, dynamic>> mediumQuestions = [
   },
   {
     'question': 'Gunung berapi tertinggi di Indonesia adalah?',
-    'options': ['Kerinci', 'Rinjani', 'Semeru', 'Agung'],
-    'answer': 'Kerinci',
+    'options': ['Puncak Jaya', 'Rinjani', 'Semeru', 'Agung'],
+    'answer': 'Puncak Jaya',
   },
   {
     'question': 'Hewan apa yang bisa hidup di darat dan air?',
