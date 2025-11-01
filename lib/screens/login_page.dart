@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       return;
                     }
 
-                    await context.read<GameState>().saveName(name);
+                    context.read<GameState>().setPlayerName(name);
 
                     if (context.mounted) {
                       Navigator.pushReplacement(
