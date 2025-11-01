@@ -35,6 +35,26 @@ class _GamePageState extends State<GamePage> {
       'options': ['2017', '2018', '2019', '2020'],
       'answer': 2,
     },
+    {
+      'question': 'Studio pembuat game “The Witcher 3” adalah?',
+      'options': ['CD Projekt Red', 'Ubisoft', 'Bethesda', 'EA'],
+      'answer': 0,
+    },
+    {
+      'question': 'Anime “One Piece” dibuat oleh?',
+      'options': ['Masashi Kishimoto', 'Eiichiro Oda', 'Tite Kubo', 'Akira Toriyama'],
+      'answer': 1,
+    },
+    {
+      'question': 'Film “Inception” disutradarai oleh?',
+      'options': ['Christopher Nolan', 'Steven Spielberg', 'James Cameron', 'Quentin Tarantino'],
+      'answer': 0,
+    },
+    {
+      'question': 'Game “Minecraft” pertama kali dirilis tahun?',
+      'options': ['2009', '2010', '2011', '2012'],
+      'answer': 2,
+    },
   ];
 
   @override
@@ -50,8 +70,7 @@ class _GamePageState extends State<GamePage> {
       if (timeLeft > 0) {
         setState(() => timeLeft--);
       } else {
-        // nanti di sini bisa dipanggil fungsi "gameOver"
-        t.cancel();
+        t.cancel(); // end logic nanti
       }
     });
   }
@@ -82,11 +101,11 @@ class _GamePageState extends State<GamePage> {
     if (index == correct) {
       context.read<GameState>().addMoney(1000);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Jawaban benar! +\$1000')),
+        const SnackBar(content: Text('Benar! +\$1000')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Jawaban salah!')),
+        const SnackBar(content: Text('Salah!')),
       );
     }
     removedOptions.clear();
@@ -106,21 +125,26 @@ class _GamePageState extends State<GamePage> {
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 50),
           onPressed: () => Navigator.pop(context),
         ),
+        centerTitle: true,
         title: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
             color: Colors.black,
-            borderRadius: BorderRadius.circular(50),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
           ),
           child: Text(
-            'Waktu: $timeLeft',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            '$timeLeft',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
           ),
         ),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -129,72 +153,131 @@ class _GamePageState extends State<GamePage> {
           children: [
             // logo
             SizedBox(
-              height: 200,
+              height: 220,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image.asset('assets/images/logo1.png', height: 200),
+                  Image.asset('assets/images/logo1.png', height: 220),
                   Positioned(
                     top: 40,
-                    child: Image.asset('assets/images/logo2.png', height: 80),
+                    child: Image.asset('assets/images/logo2.png', height: 75),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              '\$$money',
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
+
+            // uang
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: Text(
+                '\$$money',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // pertanyaan
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white, width: 2),
               ),
               child: Text(
                 q['question'],
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.white, fontSize: 18),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // lifelines
+            //fitur bantuan
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  onPressed: usedFifty ? null : useFifty,
-                  icon: const Icon(Icons.percent, color: Colors.black, size: 28),
+                // 50:50
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: TextButton(
+                    onPressed: usedFifty ? null : useFifty,
+                    child: const Text(
+                      '50:50',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: usedRefresh ? null : useRefresh,
-                  icon: const Icon(Icons.refresh, color: Colors.black, size: 28),
+                // refresh
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
+                  ),
+                  child: IconButton(
+                    onPressed: usedRefresh ? null : useRefresh,
+                    icon: const Icon(Icons.refresh, color: Colors.white, size: 22),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
 
-            // options
+            const SizedBox(height: 16),
+
+            // pilihan jawaban
             ...List.generate(4, (i) {
               final disabled = removedOptions.contains(i);
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: ElevatedButton(
-                  onPressed: disabled ? null : () => checkAnswer(i),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: disabled ? Colors.grey : Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    '${String.fromCharCode(65 + i)}. ${options[i]}',
-                    style: const TextStyle(fontSize: 16),
+                  child: ElevatedButton(
+                    onPressed: disabled ? null : () => checkAnswer(i),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      disabled ? Colors.grey.shade600 : Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      '${String.fromCharCode(65 + i)}. ${options[i]}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               );
