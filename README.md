@@ -1,7 +1,7 @@
-Vuitton Varian Utomo
-231401063
-Lab 5 Pemrograman Mobile
-Nama Aplikasi : "Siapa yang ingin menjadi Triliuner?"
+Vuitton Varian Utomo <br>
+231401063 <br>
+Lab 5 Pemrograman Mobile <br>
+Nama Aplikasi : "Siapa yang ingin menjadi Triliuner?" <br>
 
 ## Deskripsi Aplikasi
 Siapa yang ingin menjadi Triliuner? adalah game kuis edukatif berbasis Flutter yang terinspirasi dari acara "Who Wants to Be a Millionaire".  
