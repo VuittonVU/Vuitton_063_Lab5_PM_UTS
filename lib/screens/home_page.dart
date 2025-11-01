@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../states/game_state.dart';
 import 'login_page.dart';
-//import 'panduan_page.dart';
-//import 'game_page.dart';
+import 'panduan_page.dart';
+import 'game_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const HomePage()),
+                        MaterialPageRoute(builder: (_) => const GamePage()),
                       );
                     },
                     child: const Text(
@@ -113,7 +113,7 @@ class HomePage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const HomePage()),
+                        MaterialPageRoute(builder: (_) => const PanduanPage()),
                       );
                     },
                     child: const Text(
