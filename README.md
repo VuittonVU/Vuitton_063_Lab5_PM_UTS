@@ -20,10 +20,10 @@ Pemain juga diberi dua fitur bantuan, yaitu **50:50** dan **Refresh**, yang hany
 ---
 
 ## Screenshot Aplikasi
-Login 
+Login "\n"
 <img width="374" height="836" alt="Screenshot 2025-11-02 020913" src="https://github.com/user-attachments/assets/c42e8da2-b1b7-4dea-9442-6255138a4f97" />
 
-Home
+Home \n
 <img width="376" height="834" alt="Screenshot 2025-11-02 020939" src="https://github.com/user-attachments/assets/33b101e8-f0fd-4ba7-a52a-4c1ceef62967" />
 
 Panduan
