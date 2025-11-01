@@ -18,9 +18,9 @@ class GameState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // reset uang (kalau nanti mulai game baru)
-  void resetMoney() {
+  void resetGame() {
     money = 0;
+    playerName = '';
     notifyListeners();
   }
 
