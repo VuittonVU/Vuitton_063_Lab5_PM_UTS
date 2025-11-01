@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'home_page.dart';
 import '../states/game_state.dart';
+import '../widgets/logo.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,32 +30,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // logo utama
-              SizedBox(
-                height: 320,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    // teks Triliuner
-                    Image.asset(
-                      'assets/images/logo1.png',
-                      height: 320,
-                      fit: BoxFit.contain,
-                    ),
-                    // babi emas di atas tulisan
-                    Positioned(
-                      top: 60,
-                      child: Image.asset(
-                        'assets/images/logo2.png',
-                        height: 110,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 40),
+              const Logo(size: 320),
 
               // kolom input nama
               TextField(

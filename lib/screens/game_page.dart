@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../data/questions_data.dart';
 import '../states/game_state.dart';
 import 'end_page.dart';
+import '../widgets/logo.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -238,21 +239,13 @@ class _GamePageState extends State<GamePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: 250,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset('assets/images/logo1.png', height: 250),
-                  Positioned(
-                    top: 45,
-                    child: Image.asset('assets/images/logo2.png', height: 70),
-                  ),
-                ],
-              ),
+              height: 230,
+              child: const Logo(size: 220),
             ),
             const SizedBox(height: 20),
 
-            // Baris bantuan (50:50 dan refresh)
+
+          // Baris bantuan (50:50 dan refresh)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

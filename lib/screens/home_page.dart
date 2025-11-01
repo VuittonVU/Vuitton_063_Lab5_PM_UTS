@@ -4,6 +4,7 @@ import '../states/game_state.dart';
 import 'login_page.dart';
 import 'panduan_page.dart';
 import 'game_page.dart';
+import '../widgets/logo.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -34,29 +35,7 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // logo gabungan
-                SizedBox(
-                  height: 320,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/logo1.png',
-                        height: 320,
-                        fit: BoxFit.contain,
-                      ),
-                      Positioned(
-                        top: 60,
-                        child: Image.asset(
-                          'assets/images/logo2.png',
-                          height: 110,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
+                const Logo(size: 320),
 
                 // selamat datang
                 Text(

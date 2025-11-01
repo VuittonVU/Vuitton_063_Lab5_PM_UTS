@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../states/game_state.dart';
 import 'login_page.dart';
 import 'game_page.dart';
+import '../widgets/logo.dart';
 
 class EndPage extends StatelessWidget {
   final String playerName;
@@ -56,27 +57,9 @@ class EndPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo
               SizedBox(
-                height: 320,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/logo1.png',
-                      height: 320,
-                      fit: BoxFit.contain,
-                    ),
-                    Positioned(
-                      top: 60,
-                      child: Image.asset(
-                        'assets/images/logo2.png',
-                        height: 110,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ],
-                ),
+                height: 230,
+                child: const Logo(size: 220),
               ),
               const SizedBox(height: 20),
 
