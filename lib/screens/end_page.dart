@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../states/game_state.dart';
 import 'login_page.dart';
+import 'game_page.dart';
 
 class EndPage extends StatelessWidget {
   final String playerName;
@@ -20,124 +21,143 @@ class EndPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFB300),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Permainan Selesai',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 🏆 Logo + Title
+              // Logo
               SizedBox(
-                height: 220,
+                height: 320,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    Image.asset('assets/images/logo1.png', height: 220),
+                    Image.asset(
+                      'assets/images/logo1.png',
+                      height: 320,
+                      fit: BoxFit.contain,
+                    ),
                     Positioned(
-                      top: 40,
-                      child: Image.asset('assets/images/logo2.png', height: 75),
+                      top: 60,
+                      child: Image.asset(
+                        'assets/images/logo2.png',
+                        height: 110,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
-              // ✨ Nama & Uang
-              AnimatedScale(
-                scale: 1.0,
-                duration: const Duration(milliseconds: 700),
-                curve: Curves.easeOutBack,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Selamat, $playerName!',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Total Uang Kamu:',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Rp ${formatter.format(totalMoney)}',
-                        style: const TextStyle(
-                          color: Colors.greenAccent,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+              // Nama pemain
+              Text(
+                'Selamat, $playerName!',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Uang total
+              Container(
+                padding:
+                const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white, width: 3),
+                ),
+                child: Text(
+                  'Total Uang: Rp ${formatter.format(totalMoney)}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 60),
 
-              // 🔁 Tombol Aksi
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // reset state dan balik ke login
-                        context.read<GameState>().resetGame();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const LoginPage(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'Main Lagi',
-                        style: TextStyle(fontSize: 16),
-                      ),
+              // Tombol "Main Lagi"
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<GameState>().resetGame();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const GamePage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.black, width: 2),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: const Text(
-                        'Keluar',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
-                      ),
+                  child: const Text(
+                    'Main Lagi',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Tombol "Keluar"
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<GameState>().resetGame();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginPage()),
+                          (route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: const BorderSide(color: Colors.black, width: 2),
+                    ),
+                  ),
+                  child: const Text(
+                    'Keluar',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
