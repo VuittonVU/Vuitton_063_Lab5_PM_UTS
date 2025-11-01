@@ -173,7 +173,13 @@ class _GamePageState extends State<GamePage> {
         : 'Guest';
     final totalMoney = gameState.money;
 
-    context.go('/end/${Uri.encodeComponent(playerName)}/$totalMoney');
+    // kirim parameter status menang/kalah
+    final bool isWin = totalMoney >= 1000000000000;
+
+    context.go(
+      '/end/${Uri.encodeComponent(playerName)}/$totalMoney',
+      extra: {'isWin': isWin},
+    );
   }
 
   @override
@@ -210,7 +216,9 @@ class _GamePageState extends State<GamePage> {
         elevation: 0,
         leading: BackButtonWidget(
           onPressed: () {
-            context.read<GameState>().resetGame();
+            // jangan reset playerName
+            final gameState = context.read<GameState>();
+            gameState.money = 1000;
             context.go('/home');
           },
         ),
@@ -239,140 +247,150 @@ class _GamePageState extends State<GamePage> {
           children: [
             SizedBox(height: logoSize, child: Logo(size: logoSize)),
             SizedBox(height: spacingSmall),
-
-            // Bantuan 50:50 & Refresh
+            // bantuan
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AnimatedOpacity(
-                  opacity: usedFifty ? 0.4 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Container(
-                    margin:
-                    EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
-                    padding: EdgeInsets.all(screenWidth * 0.017),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 3),
-                    ),
-                    child: TextButton(
-                      onPressed: usedFifty ? null : useFifty,
-                      child: Text(
-                        '50:50',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: fontSize,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                AnimatedOpacity(
-                  opacity: usedRefresh ? 0.4 : 1.0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Container(
-                    margin:
-                    EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
-                    padding: EdgeInsets.all(screenWidth * 0.017),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 3),
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.refresh,
-                          color: Colors.white, size: screenWidth * 0.04),
-                      onPressed: usedRefresh ? null : useRefresh,
-                    ),
-                  ),
-                ),
+                _helpButton('50:50', usedFifty, useFifty, fontSize, screenWidth),
+                _helpButtonIcon(Icons.refresh, usedRefresh, useRefresh, screenWidth),
               ],
             ),
-
             SizedBox(height: spacingMedium),
-
-            // Uang
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.01,
-                horizontal: screenWidth * 0.06,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-              child: Text(
-                'Rp ${formatter.format(money)}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: fontSize * 1.1,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-
+            _moneyBox(money, fontSize, screenHeight, screenWidth),
             SizedBox(height: spacingSmall),
-
-            // Pertanyaan
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(screenWidth * 0.04),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white, width: 2),
-              ),
-              child: Text(
-                q['question'],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-
+            _questionBox(q['question'], fontSize, screenWidth),
             SizedBox(height: spacingMedium),
-
-            //Pilihan Jawaban
-            ...List.generate(currentOptions.length, (i) {
-              final disabled = removedOptions.contains(i);
-              final optionText = currentOptions[i];
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.007),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: disabled ? null : () => checkAnswer(optionText),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                      disabled ? Colors.grey.shade600 : Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.018,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side:
-                        const BorderSide(color: Colors.white, width: 2),
-                      ),
-                      elevation: 2,
-                    ),
-                    child: Text(
-                      '${String.fromCharCode(65 + i)}. $optionText',
-                      style: TextStyle(fontSize: buttonFont),
-                    ),
-                  ),
-                ),
-              );
-            }),
+            _answerButtons(screenHeight, currentOptions, buttonFont),
           ],
         ),
       ),
+    );
+  }
+
+  // widgets helper
+  Widget _helpButton(String text, bool used, VoidCallback onPressed,
+      double fontSize, double screenWidth) {
+    return AnimatedOpacity(
+      opacity: used ? 0.4 : 1.0,
+      duration: const Duration(milliseconds: 300),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+        padding: EdgeInsets.all(screenWidth * 0.017),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+        ),
+        child: TextButton(
+          onPressed: used ? null : onPressed,
+          child: Text(
+            text,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _helpButtonIcon(IconData icon, bool used, VoidCallback onPressed,
+      double screenWidth) {
+    return AnimatedOpacity(
+      opacity: used ? 0.4 : 1.0,
+      duration: const Duration(milliseconds: 300),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+        padding: EdgeInsets.all(screenWidth * 0.017),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+        ),
+        child: IconButton(
+          icon: Icon(icon, color: Colors.white, size: screenWidth * 0.04),
+          onPressed: used ? null : onPressed,
+        ),
+      ),
+    );
+  }
+
+  Widget _moneyBox(
+      int money, double fontSize, double screenHeight, double screenWidth) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: screenHeight * 0.01,
+        horizontal: screenWidth * 0.06,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      child: Text(
+        'Rp ${formatter.format(money)}',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: fontSize * 1.1,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _questionBox(String question, double fontSize, double screenWidth) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(screenWidth * 0.04),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      child: Text(
+        question,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: fontSize,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+
+  Widget _answerButtons(
+      double screenHeight, List<String> options, double buttonFont) {
+    return Column(
+      children: List.generate(options.length, (i) {
+        final disabled = removedOptions.contains(i);
+        final optionText = options[i];
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.007),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: disabled ? null : () => checkAnswer(optionText),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: disabled ? Colors.grey.shade600 : Colors.black,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.018),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: const BorderSide(color: Colors.white, width: 2),
+                ),
+                elevation: 2,
+              ),
+              child: Text(
+                '${String.fromCharCode(65 + i)}. $optionText',
+                style: TextStyle(fontSize: buttonFont),
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }

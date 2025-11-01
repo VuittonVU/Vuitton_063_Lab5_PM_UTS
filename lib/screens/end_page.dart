@@ -20,7 +20,6 @@ class EndPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final formatter = NumberFormat("#,###", "id_ID");
 
-    // ukuran dinamis
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -31,6 +30,11 @@ class EndPage extends StatelessWidget {
     final paddingHorizontal = screenWidth * 0.1;
     final spacingSmall = screenHeight * 0.02;
     final spacingLarge = screenHeight * 0.05;
+
+    // Cek status menang / kalah
+    final bool isWin = totalMoney >= 1000000000000;
+    final String resultText =
+    isWin ? "Selamat! Anda Menang" : "Anda Kalah ";
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
@@ -53,7 +57,6 @@ class EndPage extends StatelessWidget {
           ),
         ),
       ),
-
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: paddingHorizontal),
         child: Center(
@@ -62,20 +65,24 @@ class EndPage extends StatelessWidget {
             children: [
               Logo(size: logoSize),
               SizedBox(height: spacingSmall),
-
               Text(
-                'Selamat, ${Uri.decodeComponent(playerName)}!',
-                textAlign: TextAlign.center,
+                resultText,
                 style: TextStyle(
                   fontSize: textFont,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
-
               SizedBox(height: spacingSmall),
-
-              // Total uang
+              Text(
+                'Pemain: ${Uri.decodeComponent(playerName)}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: textFont * 0.9,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: spacingSmall),
               Container(
                 padding: EdgeInsets.symmetric(
                   vertical: screenHeight * 0.015,
@@ -95,15 +102,14 @@ class EndPage extends StatelessWidget {
                   ),
                 ),
               ),
-
               SizedBox(height: spacingLarge),
-
-              // Tombol Main Lagi
+              // Tombol Main
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<GameState>().resetGame();
+                    final gameState = context.read<GameState>();
+                    gameState.money = 0;
                     context.go('/game');
                   },
                   style: ElevatedButton.styleFrom(
@@ -125,10 +131,7 @@ class EndPage extends StatelessWidget {
                   ),
                 ),
               ),
-
               SizedBox(height: spacingSmall),
-
-              // Tombol Keluar
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
