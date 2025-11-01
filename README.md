@@ -21,25 +21,25 @@ Pemain juga diberi dua fitur bantuan, yaitu **50:50** dan **Refresh**, yang hany
 
 ## Screenshot Aplikasi
 Login 
-![Login](./assets/screenshots/Screenshot_2025-11-02_020913.png)
+<img width="374" height="836" alt="Screenshot 2025-11-02 020913" src="https://github.com/user-attachments/assets/c42e8da2-b1b7-4dea-9442-6255138a4f97" />
 
 Home
-![Home](./assets/screenshots/Screenshot_2025-11-02_020939.png)
+<img width="376" height="834" alt="Screenshot 2025-11-02 020939" src="https://github.com/user-attachments/assets/33b101e8-f0fd-4ba7-a52a-4c1ceef62967" />
 
 Panduan
-![Panduan](./assets/screenshots/Screenshot_2025-11-02_020957.png)
+<img width="373" height="835" alt="Screenshot 2025-11-02 020957" src="https://github.com/user-attachments/assets/6a236348-15fa-41aa-87de-49b21fa3a288" />
 
 Gameplay
-![Gameplay](./assets/screenshots/Screenshot_2025-11-02_021011.png)
+<img width="372" height="835" alt="Screenshot 2025-11-02 021011" src="https://github.com/user-attachments/assets/e6e813c0-620c-4c2a-af46-bbaf1446d563" />
 
 Gameplay (50:50 digunakan)
-![Gameplay bantuan](./assets/screenshots/Screenshot_2025-11-02_021029.png)
+<img width="371" height="830" alt="Screenshot 2025-11-02 021029" src="https://github.com/user-attachments/assets/dc5dae2a-f59f-406c-b8f8-163c1f335620" />
 
 Hasil (Kalah)
-![Kalah](./assets/screenshots/Screenshot_2025-11-02_021045.png)
+<img width="367" height="834" alt="Screenshot 2025-11-02 021045" src="https://github.com/user-attachments/assets/5e6c76ae-94a1-4ae2-96fe-78d72bd0a3ca" />
 
 Hasil (Menang)
-![Menang](./assets/screenshots/Screenshot_2025-11-02_021140.png)
+<img width="371" height="832" alt="Screenshot 2025-11-02 021140" src="https://github.com/user-attachments/assets/210b72fe-8574-41d8-add0-00eed2436cb3" />
 
 ---
 
