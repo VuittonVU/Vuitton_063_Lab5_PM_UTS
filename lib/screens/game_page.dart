@@ -7,6 +7,7 @@ import '../data/questions_data.dart';
 import '../states/game_state.dart';
 import 'end_page.dart';
 import '../widgets/logo.dart';
+import '../widgets/back_button.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -203,17 +204,13 @@ class _GamePageState extends State<GamePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 50,
-          ),
+        leading: BackButtonWidget(
           onPressed: () {
             context.read<GameState>().resetGame();
             Navigator.pop(context);
           },
         ),
+
         centerTitle: true,
         title: Container(
           padding: const EdgeInsets.all(12),

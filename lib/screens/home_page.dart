@@ -5,21 +5,19 @@ import 'login_page.dart';
 import 'panduan_page.dart';
 import 'game_page.dart';
 import '../widgets/logo.dart';
+import '../widgets/back_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final playerName = context.watch<GameState>().playerName;
-
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 50),
+        leading: BackButtonWidget(
           onPressed: () {
             Navigator.pushReplacement(
               context,

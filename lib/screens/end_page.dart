@@ -5,6 +5,7 @@ import '../states/game_state.dart';
 import 'login_page.dart';
 import 'game_page.dart';
 import '../widgets/logo.dart';
+import '../widgets/back_button.dart';
 
 class EndPage extends StatelessWidget {
   final String playerName;
@@ -25,12 +26,7 @@ class EndPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 50,
-          ),
+        leading: BackButtonWidget(
           onPressed: () {
             context.read<GameState>().resetGame();
             Navigator.pushAndRemoveUntil(

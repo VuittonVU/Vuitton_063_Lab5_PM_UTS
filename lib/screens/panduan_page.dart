@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
+import '../widgets/back_button.dart';
+
 
 class PanduanPage extends StatelessWidget {
   const PanduanPage({super.key});
@@ -11,12 +13,7 @@ class PanduanPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 50,
-          ),
+        leading: BackButtonWidget(
           onPressed: () {
             Navigator.pushReplacement(
               context,
@@ -24,6 +21,7 @@ class PanduanPage extends StatelessWidget {
             );
           },
         ),
+
         title: const Text(
           'Panduan',
           style: TextStyle(
