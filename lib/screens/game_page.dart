@@ -202,6 +202,17 @@ class _GamePageState extends State<GamePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 50,
+          ),
+          onPressed: () {
+            context.read<GameState>().resetGame();
+            Navigator.pop(context);
+          },
+        ),
         centerTitle: true,
         title: Container(
           padding: const EdgeInsets.all(12),
@@ -220,6 +231,7 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -241,12 +253,11 @@ class _GamePageState extends State<GamePage> {
             const SizedBox(height: 20),
 
             // Baris bantuan (50:50 dan refresh)
-            // Baris bantuan (50:50 dan refresh)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AnimatedOpacity(
-                  opacity: usedFifty ? 0.4 : 1.0, // Fade jika sudah digunakan
+                  opacity: usedFifty ? 0.4 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -270,7 +281,7 @@ class _GamePageState extends State<GamePage> {
                   ),
                 ),
                 AnimatedOpacity(
-                  opacity: usedRefresh ? 0.4 : 1.0, // Fade jika sudah digunakan
+                  opacity: usedRefresh ? 0.4 : 1.0,
                   duration: const Duration(milliseconds: 300),
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 12),
