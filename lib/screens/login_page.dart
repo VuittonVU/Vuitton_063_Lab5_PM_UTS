@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'home_page.dart';
 import '../states/game_state.dart';
 
 class LoginPage extends StatefulWidget {
@@ -101,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                     if (context.mounted) {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
+                        MaterialPageRoute(builder: (_) => const HomePage()),
                       );
                     }
                   },
