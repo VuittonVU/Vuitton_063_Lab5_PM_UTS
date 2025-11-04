@@ -10,17 +10,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //UI dinamis
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    final logoSize = screenHeight * 0.35;
-    final welcomeFontSize = screenWidth * 0.06;
-    final buttonFontSize = screenWidth * 0.05;
-    final verticalSpacingLarge = screenHeight * 0.06;
-    final verticalSpacingSmall = screenHeight * 0.025;
-    final horizontalPadding = screenWidth * 0.1;
-
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
@@ -32,90 +21,177 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
-      body: SafeArea(
-        child: Center(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth > 600) {
+            // --- TAMPILAN LEBAR (TABLET) ---
+            return _buildWideLayout(context, constraints);
+          } else {
+            // --- TAMPILAN SEMPIT (HP) ---
+            return _buildNarrowLayout(context, constraints);
+          }
+        },
+      ),
+    );
+  }
+
+  // =================================================================
+  // WIDGET HELPER UNTUK TATA LETAK SEMPIT (HP)
+  // =================================================================
+  Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
+    // Ukuran dinamis
+    final screenWidth = constraints.maxWidth;
+    final screenHeight = constraints.maxHeight;
+    final logoSize = screenHeight * 0.35;
+    final welcomeFontSize = screenWidth * 0.06;
+    final buttonFontSize = screenWidth * 0.05;
+    final verticalSpacingLarge = screenHeight * 0.06;
+    final verticalSpacingSmall = screenHeight * 0.025;
+    final horizontalPadding = screenWidth * 0.1;
+
+    return SafeArea(
+      child: Center(
+        child: SingleChildScrollView( // Ini penting untuk rotasi HP
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding)
+                .copyWith(bottom: verticalSpacingLarge), // Padding
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Logo(size: logoSize),
-
                 SizedBox(height: verticalSpacingSmall),
-
-                // Teks selamat datang
-                Text(
-                  'Selamat Datang!!\n${context.watch<GameState>().playerName}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: welcomeFontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                SizedBox(height: verticalSpacingLarge),
-
-                // Tombol Main
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.025,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () {
-                      context.go('/game');
-                    },
-                    child: Text(
-                      'Main',
-                      style: TextStyle(
-                        fontSize: buttonFontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: verticalSpacingSmall),
-
-                // Tombol Panduan
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.025,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () {
-                      context.go('/panduan');
-                    },
-                    child: Text(
-                      'Panduan',
-                      style: TextStyle(
-                        fontSize: buttonFontSize,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                _buildMenu(context, welcomeFontSize, buttonFontSize,
+                    verticalSpacingLarge, verticalSpacingSmall, screenHeight),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  // =================================================================
+  // WIDGET HELPER UNTUK TATA LETAK LEBAR (TABLET)
+  // =================================================================
+  Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
+    // Ukuran dinamis
+    final screenWidth = constraints.maxWidth;
+    final screenHeight = constraints.maxHeight;
+    final logoSize = screenWidth * 0.25;
+    final welcomeFontSize = screenWidth * 0.03;
+    final buttonFontSize = screenWidth * 0.025;
+    final verticalSpacingLarge = screenHeight * 0.06;
+    final verticalSpacingSmall = screenHeight * 0.025;
+    final horizontalPadding = screenWidth * 0.1;
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: Row(
+          children: [
+            // --- SISI KIRI: LOGO ---
+            Expanded(
+              flex: 1,
+              child: Center(child: Logo(size: logoSize)),
+            ),
+            SizedBox(width: horizontalPadding / 2),
+            // --- SISI KANAN: MENU ---
+            Expanded(
+              flex: 1,
+              child: _buildMenu(
+                  context,
+                  welcomeFontSize,
+                  buttonFontSize,
+                  verticalSpacingLarge,
+                  verticalSpacingSmall,
+                  screenHeight),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // =================================================================
+  // WIDGET HELPER UNTUK MENU (DIPAKAI KEDUA LAYOUT)
+  // =================================================================
+  Widget _buildMenu(
+      BuildContext context,
+      double welcomeFontSize,
+      double buttonFontSize,
+      double verticalSpacingLarge,
+      double verticalSpacingSmall,
+      double screenHeight) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Teks selamat datang
+        Text(
+          'Selamat Datang!!\n${context.watch<GameState>().playerName}',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: welcomeFontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: verticalSpacingLarge),
+
+        // Tombol Main
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.025,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            onPressed: () {
+              context.go('/game');
+            },
+            child: Text(
+              'Main',
+              style: TextStyle(
+                fontSize: buttonFontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: verticalSpacingSmall),
+
+        // Tombol Panduan
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: EdgeInsets.symmetric(
+                vertical: screenHeight * 0.025,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            onPressed: () {
+              context.go('/panduan');
+            },
+            child: Text(
+              'Panduan',
+              style: TextStyle(
+                fontSize: buttonFontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

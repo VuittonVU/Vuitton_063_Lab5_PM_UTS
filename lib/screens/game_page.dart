@@ -17,6 +17,7 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  // ... (SEMUA VARIABEL STATE ANDA TETAP SAMA) ...
   List<Map<String, dynamic>> remainingQuestions = [];
   Map<String, dynamic>? currentQuestion;
   List<String> currentOptions = [];
@@ -27,20 +28,11 @@ class _GamePageState extends State<GamePage> {
   List<int> removedOptions = [];
   bool isAnswered = false;
   final formatter = NumberFormat("#,###", "id_ID");
-
   final List<int> moneyLevels = [
-    1000,
-    10000,
-    100000,
-    1000000,
-    10000000,
-    100000000,
-    1000000000,
-    10000000000,
-    100000000000,
-    1000000000000,
+    1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 10000000000, 100000000000, 1000000000000,
   ];
 
+  // ... (SEMUA FUNGSI ANDA initState, getDifficultyPool, dll TETAP SAMA) ...
   @override
   void initState() {
     super.initState();
@@ -75,21 +67,15 @@ class _GamePageState extends State<GamePage> {
   void _nextQuestion() {
     final money = context.read<GameState>().money;
     final difficultyPool = getDifficultyPool(money);
-
-    if (remainingQuestions.isEmpty ||
-        !difficultyPool.contains(remainingQuestions.first)) {
+    if (remainingQuestions.isEmpty || !difficultyPool.contains(remainingQuestions.first)) {
       remainingQuestions = List.from(difficultyPool);
     }
-
     if (remainingQuestions.isEmpty) {
-      endGame();
-      return;
+      endGame(); return;
     }
-
     final random = Random();
     final nextQ = remainingQuestions[random.nextInt(remainingQuestions.length)];
     remainingQuestions.remove(nextQ);
-
     currentQuestion = nextQ;
     currentOptions = List<String>.from(nextQ['options']);
     currentOptions.shuffle(Random());
@@ -100,11 +86,9 @@ class _GamePageState extends State<GamePage> {
   void useFifty() {
     if (usedFifty || currentQuestion == null) return;
     usedFifty = true;
-
     final correct = currentQuestion!['answer'];
     final wrongOptions = currentOptions.where((o) => o != correct).toList();
     wrongOptions.shuffle();
-
     removedOptions = [];
     for (int i = 0; i < currentOptions.length; i++) {
       if (wrongOptions.take(2).contains(currentOptions[i])) {
@@ -125,30 +109,23 @@ class _GamePageState extends State<GamePage> {
   void checkAnswer(String selectedOption) {
     if (isAnswered || currentQuestion == null) return;
     isAnswered = true;
-
     final correctAnswer = currentQuestion!['answer'];
     final gameState = context.read<GameState>();
-
     if (selectedOption == correctAnswer) {
       int currentIndex = moneyLevels.indexOf(gameState.money);
       if (currentIndex < moneyLevels.length - 1) {
         gameState.money = moneyLevels[currentIndex + 1];
       }
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Benar! Uang sekarang: Rp ${formatter.format(gameState.money)}',
-          ),
+          content: Text('Benar! Uang sekarang: Rp ${formatter.format(gameState.money)}'),
           duration: const Duration(seconds: 1),
         ),
       );
-
       if (gameState.money >= 1000000000000) {
         Future.delayed(const Duration(seconds: 1), endGame);
         return;
       }
-
       Future.delayed(const Duration(seconds: 1), () {
         isAnswered = false;
         timeLeft = 20;
@@ -168,14 +145,9 @@ class _GamePageState extends State<GamePage> {
   void endGame() {
     timer?.cancel();
     final gameState = context.read<GameState>();
-    final playerName = gameState.playerName.isNotEmpty
-        ? gameState.playerName
-        : 'Guest';
+    final playerName = gameState.playerName.isNotEmpty ? gameState.playerName : 'Guest';
     final totalMoney = gameState.money;
-
-    // kirim parameter status menang/kalah
     final bool isWin = totalMoney >= 1000000000000;
-
     context.go(
       '/end/${Uri.encodeComponent(playerName)}/$totalMoney',
       extra: {'isWin': isWin},
@@ -188,6 +160,9 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
+  // =================================================================
+  // BUILD METHOD UTAMA
+  // =================================================================
   @override
   Widget build(BuildContext context) {
     if (currentQuestion == null) {
@@ -197,26 +172,20 @@ class _GamePageState extends State<GamePage> {
       );
     }
 
-    final q = currentQuestion!;
-    final money = context.watch<GameState>().money;
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final timerSize = screenWidth * 0.10;
-    final logoSize = screenHeight * 0.22;
-    final fontSize = screenWidth * 0.04;
-    final buttonFont = screenWidth * 0.042;
-    final spacingSmall = screenHeight * 0.02;
-    final spacingMedium = screenHeight * 0.03;
+    final screenSize = MediaQuery.of(context).size;
+    // Gunakan dimensi TERKECIL (lebar atau tinggi) untuk timer
+    final smallestDimension = min(screenSize.width, screenSize.height);
+    // Kita sesuaikan multiplier-nya (misal 0.12) agar pas
+    final timerSize = smallestDimension * 0.10;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
+        // ... (Kode AppBar Anda tetap sama) ...
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
         leading: BackButtonWidget(
           onPressed: () {
-            // jangan reset playerName
             final gameState = context.read<GameState>();
             gameState.money = 1000;
             context.go('/home');
@@ -240,7 +209,36 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ),
-      body: Padding(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth > 650) { // Breakpoint 650
+            return _buildWideLayout(context, constraints);
+          } else {
+            return _buildNarrowLayout(context, constraints);
+          }
+        },
+      ),
+    );
+  }
+
+  // =================================================================
+  // WIDGET HELPER UNTUK TATA LETAK SEMPIT (HP)
+  // =================================================================
+  Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
+    final money = context.watch<GameState>().money;
+    final q = currentQuestion!;
+
+    // Ukuran dinamis
+    final screenWidth = constraints.maxWidth;
+    final screenHeight = constraints.maxHeight;
+    final logoSize = screenHeight * 0.22;
+    final fontSize = screenWidth * 0.04;
+    final buttonFont = screenWidth * 0.042;
+    final spacingSmall = screenHeight * 0.02;
+    final spacingMedium = screenHeight * 0.03;
+
+    return SingleChildScrollView( // Penting untuk rotasi HP
+      child: Padding(
         padding: EdgeInsets.all(screenWidth * 0.05),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -267,7 +265,69 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  // widgets helper
+  // =================================================================
+  // WIDGET HELPER UNTUK TATA LETAK LEBAR (TABLET)
+  // =================================================================
+  Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
+    final money = context.watch<GameState>().money;
+    final q = currentQuestion!;
+
+    // Ukuran dinamis
+    final screenWidth = constraints.maxWidth;
+    final screenHeight = constraints.maxHeight;
+    final logoSize = screenWidth * 0.12; // Logo lebih kecil
+    final fontSize = screenWidth * 0.02;
+    final buttonFont = screenWidth * 0.022;
+    final spacingMedium = screenHeight * 0.03;
+
+    return Row(
+      children: [
+        // --- SISI KIRI: INFO (Logo, Bantuan, Uang) ---
+        Expanded(
+          flex: 2, // 2 bagian
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth * 0.02),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Logo(size: logoSize),
+                SizedBox(height: spacingMedium),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _helpButton('50:50', usedFifty, useFifty, fontSize, screenWidth * 0.3), // screenWidth dikecilkan
+                    _helpButtonIcon(Icons.refresh, usedRefresh, useRefresh, screenWidth * 0.3),
+                  ],
+                ),
+                SizedBox(height: spacingMedium),
+                _moneyBox(money, fontSize, screenHeight, screenWidth * 0.3),
+              ],
+            ),
+          ),
+        ),
+
+        // --- SISI KANAN: AKSI (Pertanyaan, Jawaban) ---
+        Expanded(
+          flex: 3, // 3 bagian, lebih besar
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(screenWidth * 0.03),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _questionBox(q['question'], fontSize, screenWidth * 0.6), // screenWidth dikecilkan
+                  SizedBox(height: spacingMedium),
+                  _answerButtons(screenHeight, currentOptions, buttonFont),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ... (SEMUA WIDGET HELPER ANDA _helpButton, _moneyBox, dll TETAP SAMA) ...
   Widget _helpButton(String text, bool used, VoidCallback onPressed,
       double fontSize, double screenWidth) {
     return AnimatedOpacity(
