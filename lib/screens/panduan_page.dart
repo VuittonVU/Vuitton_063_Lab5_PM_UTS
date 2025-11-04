@@ -7,14 +7,8 @@ class PanduanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // UI dinamis
     final screenWidth = MediaQuery.of(context).size.width;
-
     final titleFont = screenWidth * 0.06;
-    final bodyFont = screenWidth * 0.04;
-    final paddingAll = screenWidth * 0.06;
-    final containerPadding = screenWidth * 0.05;
-    final borderRadius = screenWidth * 0.03;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
@@ -32,27 +26,79 @@ class PanduanPage extends StatelessWidget {
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: titleFont,
+            fontSize: (titleFont > 40) ? 40 : titleFont,
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(paddingAll),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Container panduan
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(containerPadding),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFD382),
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  border: Border.all(color: Colors.black, width: 1.2),
-                ),
-                child: Text(
-                  '''
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth > 700) {
+            return _buildWideLayout(context, constraints);
+          } else {
+            return _buildNarrowLayout(context, constraints);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
+    // Ambil ukuran dari constraints
+    final screenWidth = constraints.maxWidth;
+    final bodyFont = screenWidth * 0.04;
+    final paddingAll = screenWidth * 0.06;
+
+    return Padding(
+      padding: EdgeInsets.all(paddingAll),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildPanduanContent(context, bodyFont),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
+    final bodyFont = constraints.maxWidth * 0.02;
+
+    return Center(
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: _buildPanduanContent(
+                context,
+                (bodyFont > 22) ? 22 : (bodyFont < 16) ? 16 : bodyFont
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPanduanContent(BuildContext context, double bodyFont) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final borderRadius = screenWidth * 0.03;
+    final containerPadding = screenWidth * 0.05;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(
+          (containerPadding > 40) ? 40 : containerPadding
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFD382),
+        borderRadius: BorderRadius.circular(
+            (borderRadius > 20) ? 20 : borderRadius
+        ),
+        border: Border.all(color: Colors.black, width: 1.2),
+      ),
+      child: Text(
+        '''
 Panduan Cara Bermain
 
 1. Masukkan nama Anda di halaman login.
@@ -68,17 +114,12 @@ Panduan Cara Bermain
 
 Selamat bermain dan jadilah Triliuner!!
 ''',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: bodyFont,
-                    height: 1.6,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: bodyFont,
+          height: 1.6,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

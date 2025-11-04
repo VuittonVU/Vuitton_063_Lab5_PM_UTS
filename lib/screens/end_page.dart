@@ -19,7 +19,7 @@ class EndPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final titleFont = screenWidth * 0.065;
+    final titleFont = screenWidth * 0.040;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),

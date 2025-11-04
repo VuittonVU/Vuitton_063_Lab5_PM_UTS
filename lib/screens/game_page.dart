@@ -28,18 +28,25 @@ class _GamePageState extends State<GamePage> {
   bool isAnswered = false;
   final formatter = NumberFormat("#,###", "id_ID");
   final List<int> moneyLevels = [
-    1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 10000000000, 100000000000, 1000000000000,
+    1000,
+    10000,
+    100000,
+    1000000,
+    10000000,
+    100000000,
+    1000000000,
+    10000000000,
+    100000000000,
+    1000000000000,
   ];
 
   @override
-  //state game
   void initState() {
     super.initState();
     _loadQuestions(easyQuestions);
     startTimer();
   }
 
-  //fungsi tingkat kesulitan pertanyaan
   List<Map<String, dynamic>> getDifficultyPool(int money) {
     if (money < 10000000) return easyQuestions;
     if (money < 1000000000) return mediumQuestions;
@@ -67,11 +74,13 @@ class _GamePageState extends State<GamePage> {
   void _nextQuestion() {
     final money = context.read<GameState>().money;
     final difficultyPool = getDifficultyPool(money);
-    if (remainingQuestions.isEmpty || !difficultyPool.contains(remainingQuestions.first)) {
+    if (remainingQuestions.isEmpty ||
+        !difficultyPool.contains(remainingQuestions.first)) {
       remainingQuestions = List.from(difficultyPool);
     }
     if (remainingQuestions.isEmpty) {
-      endGame(); return;
+      endGame();
+      return;
     }
     final random = Random();
     final nextQ = remainingQuestions[random.nextInt(remainingQuestions.length)];
@@ -118,7 +127,8 @@ class _GamePageState extends State<GamePage> {
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Benar! Uang sekarang: Rp ${formatter.format(gameState.money)}'),
+          content:
+          Text('Benar! Uang sekarang: Rp ${formatter.format(gameState.money)}'),
           duration: const Duration(seconds: 1),
         ),
       );
@@ -145,7 +155,8 @@ class _GamePageState extends State<GamePage> {
   void endGame() {
     timer?.cancel();
     final gameState = context.read<GameState>();
-    final playerName = gameState.playerName.isNotEmpty ? gameState.playerName : 'Guest';
+    final playerName =
+    gameState.playerName.isNotEmpty ? gameState.playerName : 'Guest';
     final totalMoney = gameState.money;
     final bool isWin = totalMoney >= 1000000000000;
     context.go(
@@ -160,7 +171,7 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
-  //build layout utama
+  //build utama
   @override
   Widget build(BuildContext context) {
     if (currentQuestion == null) {
@@ -170,9 +181,7 @@ class _GamePageState extends State<GamePage> {
       );
     }
 
-    final screenSize = MediaQuery.of(context).size;
-    final smallestDimension = min(screenSize.width, screenSize.height);
-    final timerSize = smallestDimension * 0.10;
+    final timerSize = 35.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
@@ -207,6 +216,7 @@ class _GamePageState extends State<GamePage> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth > 650) {
+            // Breakpoint 650
             return _buildWideLayout(context, constraints);
           } else {
             return _buildNarrowLayout(context, constraints);
@@ -216,7 +226,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  //build layout layar biasa HP
+  //build layout untuk hp
   Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
     final money = context.watch<GameState>().money;
     final q = currentQuestion!;
@@ -229,6 +239,7 @@ class _GamePageState extends State<GamePage> {
     final buttonFont = screenWidth * 0.042;
     final spacingSmall = screenHeight * 0.02;
     final spacingMedium = screenHeight * 0.03;
+    final helpButtonDiameter = screenWidth * 0.20;
 
     return SingleChildScrollView(
       child: Padding(
@@ -238,12 +249,13 @@ class _GamePageState extends State<GamePage> {
           children: [
             SizedBox(height: logoSize, child: Logo(size: logoSize)),
             SizedBox(height: spacingSmall),
-            // fitur bantuan
+            // bantuan
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _helpButton('50:50', usedFifty, useFifty, fontSize, screenWidth),
-                _helpButtonIcon(Icons.refresh, usedRefresh, useRefresh, screenWidth),
+                _helpButton('50:50', usedFifty, useFifty, helpButtonDiameter),
+                _helpButtonIcon(
+                    Icons.refresh, usedRefresh, useRefresh, helpButtonDiameter),
               ],
             ),
             SizedBox(height: spacingMedium),
@@ -258,7 +270,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  //build layout untuk layar lebar dan rotasi
+  //build layout untuk layar lebar
   Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
     final money = context.watch<GameState>().money;
     final q = currentQuestion!;
@@ -271,9 +283,11 @@ class _GamePageState extends State<GamePage> {
     final buttonFont = screenWidth * 0.022;
     final spacingMedium = screenHeight * 0.03;
 
+    final helpButtonDiameter = screenWidth * 0.07;
+
     return Row(
       children: [
-        //Sisi kiri: INFO (Logo, Bantuan, Uang)
+        //SISI KIRI: INFO (Logo, Bantuan, Uang)
         Expanded(
           flex: 2,
           child: Padding(
@@ -286,8 +300,10 @@ class _GamePageState extends State<GamePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _helpButton('50:50', usedFifty, useFifty, fontSize, screenWidth * 0.3), // screenWidth dikecilkan
-                    _helpButtonIcon(Icons.refresh, usedRefresh, useRefresh, screenWidth * 0.3),
+                    _helpButton(
+                        '50:50', usedFifty, useFifty, helpButtonDiameter),
+                    _helpButtonIcon(Icons.refresh, usedRefresh, useRefresh,
+                        helpButtonDiameter),
                   ],
                 ),
                 SizedBox(height: spacingMedium),
@@ -297,7 +313,7 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
 
-        //Sisi kanan: AKSI (Pertanyaan, Jawaban)
+        //SISI KANAN: AKSI (Pertanyaan, Jawaban)
         Expanded(
           flex: 3,
           child: SingleChildScrollView(
@@ -318,14 +334,15 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  Widget _helpButton(String text, bool used, VoidCallback onPressed,
-      double fontSize, double screenWidth) {
+  Widget _helpButton(
+      String text, bool used, VoidCallback onPressed, double diameter) {
     return AnimatedOpacity(
       opacity: used ? 0.4 : 1.0,
       duration: const Duration(milliseconds: 300),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
-        padding: EdgeInsets.all(screenWidth * 0.017),
+        height: diameter,
+        width: diameter,
+        margin: EdgeInsets.symmetric(horizontal: diameter * 0.1),
         decoration: BoxDecoration(
           color: Colors.black,
           shape: BoxShape.circle,
@@ -333,12 +350,16 @@ class _GamePageState extends State<GamePage> {
         ),
         child: TextButton(
           onPressed: used ? null : onPressed,
+          style: TextButton.styleFrom(
+            shape: const CircleBorder(),
+            padding: EdgeInsets.zero,
+          ),
           child: Text(
             text,
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: fontSize,
+              fontSize: diameter * 0.30,
             ),
           ),
         ),
@@ -346,21 +367,22 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  Widget _helpButtonIcon(IconData icon, bool used, VoidCallback onPressed,
-      double screenWidth) {
+  Widget _helpButtonIcon(
+      IconData icon, bool used, VoidCallback onPressed, double diameter) {
     return AnimatedOpacity(
       opacity: used ? 0.4 : 1.0,
       duration: const Duration(milliseconds: 300),
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
-        padding: EdgeInsets.all(screenWidth * 0.017),
+        height: diameter,
+        width: diameter,
+        margin: EdgeInsets.symmetric(horizontal: diameter * 0.1),
         decoration: BoxDecoration(
           color: Colors.black,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 3),
         ),
         child: IconButton(
-          icon: Icon(icon, color: Colors.white, size: screenWidth * 0.04),
+          icon: Icon(icon, color: Colors.white, size: diameter * 0.5),
           onPressed: used ? null : onPressed,
         ),
       ),
