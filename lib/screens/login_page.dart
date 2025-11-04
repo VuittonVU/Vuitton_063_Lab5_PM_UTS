@@ -59,11 +59,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK SEMPIT (HP)
-  // =================================================================
+  //build layout untuk layar hp
   Widget _buildNarrowLayout(BoxConstraints constraints) {
-    // Ukuran dinamis berdasarkan layout sempit
+    // Ukuran dinamis berdasarkan layout
     final screenWidth = constraints.maxWidth;
     final screenHeight = constraints.maxHeight;
     final logoSize = screenHeight * 0.35;
@@ -73,10 +71,10 @@ class _LoginPageState extends State<LoginPage> {
     final horizontalPadding = screenWidth * 0.1;
 
     return SafeArea(
-      child: SingleChildScrollView( // Ini penting untuk rotasi HP
+      child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding)
-              .copyWith(top: screenHeight * 0.1), // Padding atas
+              .copyWith(top: screenHeight * 0.1),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -92,14 +90,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK LEBAR (TABLET)
-  // =================================================================
+//build layout untuk layar lebar dan rotate
   Widget _buildWideLayout(BoxConstraints constraints) {
-    // Ukuran dinamis berdasarkan layout lebar
+    // Ukuran dinamis berdasarkan layout
     final screenWidth = constraints.maxWidth;
     final screenHeight = constraints.maxHeight;
-    final logoSize = screenWidth * 0.25; // Logo lebih kecil, di samping
+    final logoSize = screenWidth * 0.25;
     final inputFontSize = screenWidth * 0.02;
     final buttonFontSize = screenWidth * 0.02;
     final horizontalPadding = screenWidth * 0.1;
@@ -110,13 +106,11 @@ class _LoginPageState extends State<LoginPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // --- SISI KIRI: LOGO ---
             Expanded(
               flex: 1,
               child: Center(child: Logo(size: logoSize)),
             ),
 
-            // --- SISI KANAN: FORM LOGIN ---
             Expanded(
               flex: 1,
               child: Column(
@@ -132,9 +126,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK FORM (DIPAKAI KEDUA LAYOUT)
-  // =================================================================
+//widget untuk form
   Widget _buildLoginForm(
       double inputFontSize, double buttonFontSize, double screenHeight) {
     return Column(

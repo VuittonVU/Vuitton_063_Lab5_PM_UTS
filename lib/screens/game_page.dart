@@ -17,7 +17,6 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  // ... (SEMUA VARIABEL STATE ANDA TETAP SAMA) ...
   List<Map<String, dynamic>> remainingQuestions = [];
   Map<String, dynamic>? currentQuestion;
   List<String> currentOptions = [];
@@ -32,14 +31,15 @@ class _GamePageState extends State<GamePage> {
     1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 10000000000, 100000000000, 1000000000000,
   ];
 
-  // ... (SEMUA FUNGSI ANDA initState, getDifficultyPool, dll TETAP SAMA) ...
   @override
+  //state game
   void initState() {
     super.initState();
     _loadQuestions(easyQuestions);
     startTimer();
   }
 
+  //fungsi tingkat kesulitan pertanyaan
   List<Map<String, dynamic>> getDifficultyPool(int money) {
     if (money < 10000000) return easyQuestions;
     if (money < 1000000000) return mediumQuestions;
@@ -160,9 +160,7 @@ class _GamePageState extends State<GamePage> {
     super.dispose();
   }
 
-  // =================================================================
-  // BUILD METHOD UTAMA
-  // =================================================================
+  //build layout utama
   @override
   Widget build(BuildContext context) {
     if (currentQuestion == null) {
@@ -173,15 +171,12 @@ class _GamePageState extends State<GamePage> {
     }
 
     final screenSize = MediaQuery.of(context).size;
-    // Gunakan dimensi TERKECIL (lebar atau tinggi) untuk timer
     final smallestDimension = min(screenSize.width, screenSize.height);
-    // Kita sesuaikan multiplier-nya (misal 0.12) agar pas
     final timerSize = smallestDimension * 0.10;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
-        // ... (Kode AppBar Anda tetap sama) ...
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
         leading: BackButtonWidget(
@@ -211,7 +206,7 @@ class _GamePageState extends State<GamePage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth > 650) { // Breakpoint 650
+          if (constraints.maxWidth > 650) {
             return _buildWideLayout(context, constraints);
           } else {
             return _buildNarrowLayout(context, constraints);
@@ -221,9 +216,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK SEMPIT (HP)
-  // =================================================================
+  //build layout layar biasa HP
   Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
     final money = context.watch<GameState>().money;
     final q = currentQuestion!;
@@ -237,7 +230,7 @@ class _GamePageState extends State<GamePage> {
     final spacingSmall = screenHeight * 0.02;
     final spacingMedium = screenHeight * 0.03;
 
-    return SingleChildScrollView( // Penting untuk rotasi HP
+    return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.all(screenWidth * 0.05),
         child: Column(
@@ -245,7 +238,7 @@ class _GamePageState extends State<GamePage> {
           children: [
             SizedBox(height: logoSize, child: Logo(size: logoSize)),
             SizedBox(height: spacingSmall),
-            // bantuan
+            // fitur bantuan
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -265,9 +258,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK LEBAR (TABLET)
-  // =================================================================
+  //build layout untuk layar lebar dan rotasi
   Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
     final money = context.watch<GameState>().money;
     final q = currentQuestion!;
@@ -275,16 +266,16 @@ class _GamePageState extends State<GamePage> {
     // Ukuran dinamis
     final screenWidth = constraints.maxWidth;
     final screenHeight = constraints.maxHeight;
-    final logoSize = screenWidth * 0.12; // Logo lebih kecil
+    final logoSize = screenWidth * 0.12;
     final fontSize = screenWidth * 0.02;
     final buttonFont = screenWidth * 0.022;
     final spacingMedium = screenHeight * 0.03;
 
     return Row(
       children: [
-        // --- SISI KIRI: INFO (Logo, Bantuan, Uang) ---
+        //Sisi kiri: INFO (Logo, Bantuan, Uang)
         Expanded(
-          flex: 2, // 2 bagian
+          flex: 2,
           child: Padding(
             padding: EdgeInsets.all(screenWidth * 0.02),
             child: Column(
@@ -306,16 +297,16 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
 
-        // --- SISI KANAN: AKSI (Pertanyaan, Jawaban) ---
+        //Sisi kanan: AKSI (Pertanyaan, Jawaban)
         Expanded(
-          flex: 3, // 3 bagian, lebih besar
+          flex: 3,
           child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(screenWidth * 0.03),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _questionBox(q['question'], fontSize, screenWidth * 0.6), // screenWidth dikecilkan
+                  _questionBox(q['question'], fontSize, screenWidth * 0.6),
                   SizedBox(height: spacingMedium),
                   _answerButtons(screenHeight, currentOptions, buttonFont),
                 ],
@@ -327,7 +318,6 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  // ... (SEMUA WIDGET HELPER ANDA _helpButton, _moneyBox, dll TETAP SAMA) ...
   Widget _helpButton(String text, bool used, VoidCallback onPressed,
       double fontSize, double screenWidth) {
     return AnimatedOpacity(

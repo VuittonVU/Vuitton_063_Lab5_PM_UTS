@@ -24,7 +24,6 @@ class EndPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFB300),
       appBar: AppBar(
-        // ... (Kode AppBar Anda tetap sama) ...
         backgroundColor: const Color(0xFFFFB300),
         elevation: 0,
         leading: BackButtonWidget(
@@ -46,10 +45,10 @@ class EndPage extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth > 600) {
-            // --- TAMPILAN LEBAR (TABLET) ---
+            //build layout layar lebar
             return _buildWideLayout(context, constraints);
           } else {
-            // --- TAMPILAN SEMPIT (HP) ---
+            //build layout HP
             return _buildNarrowLayout(context, constraints);
           }
         },
@@ -57,9 +56,7 @@ class EndPage extends StatelessWidget {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK SEMPIT (HP)
-  // =================================================================
+  //build layout hp
   Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
     // Ukuran dinamis
     final screenWidth = constraints.maxWidth;
@@ -71,7 +68,7 @@ class EndPage extends StatelessWidget {
     final spacingSmall = screenHeight * 0.02;
     final spacingLarge = screenHeight * 0.05;
 
-    return SingleChildScrollView( // Penting untuk rotasi HP
+    return SingleChildScrollView( //rotasi
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: paddingHorizontal)
             .copyWith(top: spacingSmall, bottom: spacingLarge),
@@ -90,9 +87,7 @@ class EndPage extends StatelessWidget {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK LEBAR (TABLET)
-  // =================================================================
+  //build layout layar lebar
   Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
     // Ukuran dinamis
     final screenWidth = constraints.maxWidth;
@@ -108,13 +103,11 @@ class EndPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: paddingHorizontal),
       child: Row(
         children: [
-          // --- SISI KIRI: LOGO ---
           Expanded(
             flex: 1,
             child: Center(child: Logo(size: logoSize)),
           ),
           SizedBox(width: paddingHorizontal / 2),
-          // --- SISI KANAN: SKOR & TOMBOL ---
           Expanded(
             flex: 1,
             child: _buildScoreboard(context, textFont, buttonFont, screenHeight,
@@ -125,9 +118,7 @@ class EndPage extends StatelessWidget {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK SKOR & TOMBOL (DIPAKAI KEDUA LAYOUT)
-  // =================================================================
+
   Widget _buildScoreboard(
       BuildContext context,
       double textFont,

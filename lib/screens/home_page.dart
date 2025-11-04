@@ -35,9 +35,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK SEMPIT (HP)
-  // =================================================================
+//build layout untuk screen HP
   Widget _buildNarrowLayout(BuildContext context, BoxConstraints constraints) {
     // Ukuran dinamis
     final screenWidth = constraints.maxWidth;
@@ -51,10 +49,10 @@ class HomePage extends StatelessWidget {
 
     return SafeArea(
       child: Center(
-        child: SingleChildScrollView( // Ini penting untuk rotasi HP
+        child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding)
-                .copyWith(bottom: verticalSpacingLarge), // Padding
+                .copyWith(bottom: verticalSpacingLarge),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -70,9 +68,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK TATA LETAK LEBAR (TABLET)
-  // =================================================================
+//build layout untuk layar lebar dan rotate
   Widget _buildWideLayout(BuildContext context, BoxConstraints constraints) {
     // Ukuran dinamis
     final screenWidth = constraints.maxWidth;
@@ -89,13 +85,11 @@ class HomePage extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: Row(
           children: [
-            // --- SISI KIRI: LOGO ---
             Expanded(
               flex: 1,
               child: Center(child: Logo(size: logoSize)),
             ),
             SizedBox(width: horizontalPadding / 2),
-            // --- SISI KANAN: MENU ---
             Expanded(
               flex: 1,
               child: _buildMenu(
@@ -112,9 +106,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // =================================================================
-  // WIDGET HELPER UNTUK MENU (DIPAKAI KEDUA LAYOUT)
-  // =================================================================
+//wdiget Menu
   Widget _buildMenu(
       BuildContext context,
       double welcomeFontSize,
